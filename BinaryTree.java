@@ -4,9 +4,12 @@ import java.util.*;
 
 /**
  * Generic binary tree, storing data of a parametric type in each node
+ * with 2 utility methods 
  *
  * @author Chris Bailey-Kellogg, Dartmouth CS 10, Fall 2012
  * @author Scot Drysdale, Winter 2012.  Numerous modifications.
+ * 
+ * @author Delos Chang, 1/31/13, modified to add two utility methods 
  */
 
 public class BinaryTree<E> {
@@ -140,6 +143,35 @@ public class BinaryTree<E> {
 		if (hasLeft() && !left.equals(t2.left)) return false;
 		if (hasRight() && !right.equals(t2.right)) return false;
 		return true;
+	}
+	
+	/**
+	 * Make a shallow copy of this tree.  (By shallow, we mean that
+	 * the data items are linked and not copied.  Thus, for instance,
+	 * if the method getValue() is called on the root of this tree
+	 * and on the root of the copy of the tree, the method will return 
+	 * reference to the same object.
+	 * @return a shallow copy of this tree.
+	 */
+	public BinaryTree<E> copyTree() {
+		BinaryTree<E> shallowTree; 
+		BinaryTree<E> leftBT = null;
+		BinaryTree<E> rightBT = null;
+		
+		// If at leaf, create the binary tree with no nodes
+		if (isLeaf()){
+			shallowTree = new BinaryTree(this);
+			return shallowTree;
+		}
+		
+		if (hasLeft()){
+			leftBT = left.copyTree();
+		}
+		if (hasRight()){
+			rightBT = right.copyTree();
+		}
+		shallowTree = new BinaryTree(this, leftBT, rightBT);
+		return shallowTree;
 	}
 
 	/**
@@ -275,6 +307,26 @@ public class BinaryTree<E> {
 	}
 
 
+	/**
+	 * Counts the number of leaf nodes in this tree
+	 * @return the number of leaf nodes in this tree
+	 */
+	public int countLeaves() {
+		int num = 0;
+		if (isLeaf()){
+			return 1;
+		} else {
+			if (hasLeft()){
+				num += left.countLeaves();
+			}
+			if (hasRight()){
+				num += right.countLeaves();
+			}
+		}
+		return num;
+	}
+	
+	
 	/**	
 	 * Testing program
 	 */
@@ -293,6 +345,9 @@ public class BinaryTree<E> {
 		System.out.println("Size of tree = " + tree.size());
 		System.out.println("Height of tree = " + tree.height());
 		System.out.println("Fringe of tree =" + tree.fringe());
+		
+		// Testing utility methods
+		System.out.println("Count Leaves = " + tree.countLeaves());
 
 		// Build a tree from traversals
 		List<String> preList = new LinkedList<String>();
