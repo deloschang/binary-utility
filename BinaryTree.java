@@ -154,24 +154,27 @@ public class BinaryTree<E> {
 	 * @return a shallow copy of this tree.
 	 */
 	public BinaryTree<E> copyTree() {
-		BinaryTree<E> shallowTree; 
-		BinaryTree<E> leftBT = null;
-		BinaryTree<E> rightBT = null;
+		BinaryTree<E> shallowTree = null, baseNode = null, leftBT = null, rightBT = null; 
 		
-		// If at leaf, create the binary tree with no nodes
+		// Base case
+		// If at leaf, create a binary tree with no nodes (leaf)
 		if (isLeaf()){
-			shallowTree = new BinaryTree(this);
+			baseNode = new BinaryTree(this.data); // no left or right
+			return baseNode;
+		} else { 
+			
+			if (hasLeft()){
+				leftBT = left.copyTree();
+			}
+			
+			if (hasRight()){
+				rightBT = right.copyTree();
+			}
+			
+			// return a new binary tree with the left and right trees incorporated
+			shallowTree = new BinaryTree(this.data, leftBT, rightBT);
 			return shallowTree;
 		}
-		
-		if (hasLeft()){
-			leftBT = left.copyTree();
-		}
-		if (hasRight()){
-			rightBT = right.copyTree();
-		}
-		shallowTree = new BinaryTree(this, leftBT, rightBT);
-		return shallowTree;
 	}
 
 	/**
@@ -348,7 +351,16 @@ public class BinaryTree<E> {
 		
 		// Testing utility methods
 		System.out.println("Count Leaves = " + tree.countLeaves());
+		BinaryTree<String> copyTree = tree.copyTree();
+		System.out.println("copytree: \n" + copyTree);
+		System.out.println("Does tree structure equal? " + copyTree.equals(tree));
 
+		// Test/Edge Case: what if it's an empty tree?
+		BinaryTree<String> emptyTree = new BinaryTree<String>(null);
+		System.out.println("empty tree: \n" + emptyTree); 
+		BinaryTree<String> copyEmptyTree = emptyTree.copyTree();
+		System.out.println("copy empty tree: \n" + copyEmptyTree); 
+		
 		// Build a tree from traversals
 		List<String> preList = new LinkedList<String>();
 		tree.preorder(preList);
